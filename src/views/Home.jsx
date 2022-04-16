@@ -21,7 +21,7 @@ export default function Home({navigation}) {
   const styles = useStyles();
 
   function menu() {
-    navigation.navigate("Menu") 
+    navigation.navigate("Menu")
   }
 
   function reviews() {
@@ -33,7 +33,7 @@ export default function Home({navigation}) {
   }
 
   function changePassword() {
-
+      navigation.navigate("ChangePassword")
   }
 
   function logout() {
@@ -47,11 +47,11 @@ export default function Home({navigation}) {
             'Authorization': 'Token ' + token
           }
         }
-        
+
         fetch('https://mtaa-apina.herokuapp.com/logout/', options)
           .then(() => {
             SecureStore.deleteItemAsync("userToken")
-            navigation.navigate("Login") 
+            navigation.navigate("Login")
           })
           .catch(error => console.log(error))
       })
@@ -67,7 +67,7 @@ export default function Home({navigation}) {
       <Separator height={10}/>
       <MyButton text={"Uskutočniť videohovor"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
-      <MyButton text={"Zmena heslo"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
+      <MyButton onPress={changePassword} text={"Zmena hesla"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
       <MyButton onPress={logout} text={"Odhlásiť sa"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
     </View>

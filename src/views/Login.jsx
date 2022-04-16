@@ -28,6 +28,10 @@ export default function Login() {
     navigation.navigate("Home")
   }
 
+  function navigateToResetPassword() {
+    navigation.navigate("ResetPassword")
+  }
+
   SecureStore.getItemAsync('userToken')
   .then((token) => {
       if(token){
@@ -43,7 +47,7 @@ export default function Login() {
     if (!username) {
       Alert.alert("Login failed", "username is required")
       return
-    } 
+    }
 
     if (!password) {
       Alert.alert("Login failed", "password is required")
@@ -68,11 +72,11 @@ export default function Login() {
       .then(data => {
           if(data.token){
             SecureStore.setItemAsync("userToken", data.token)
-            navigateHome()  
+            navigateHome()
             return
-          } 
+          }
           Alert.alert("Login failed", "username or password is incorrect")
-          
+
       })
       .catch(error => console.log(error))
   }
@@ -91,20 +95,20 @@ export default function Login() {
 
         <Separator height={30}/>
 
-        <MyInput 
-          contentType={"username"} 
-          hideSymbols={false} 
-          onChangeText={setUsername} 
-          inputRef={nameInput} 
-          styles={styles} 
+        <MyInput
+          contentType={"username"}
+          hideSymbols={false}
+          onChangeText={setUsername}
+          inputRef={nameInput}
+          styles={styles}
           text={"Meno"}/>
         <Separator height={10}/>
         <MyInput
-          contentType={"password"} 
-          hideSymbols={true} 
-          onChangeText={setPassword} 
+          contentType={"password"}
+          hideSymbols={true}
+          onChangeText={setPassword}
           inputRef={pswdInput}
-          styles={styles} 
+          styles={styles}
           text={"Heslo"}/>
         <Separator height={30}/>
 
@@ -112,7 +116,6 @@ export default function Login() {
         <Separator height={10}/>
         <MyButton onPress={navigateRegister} text={"Zaregistrovať sa"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
         <Separator height={10}/>
-        <MyButton text={"Zabudnuté heslo?"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
 
       </KeyboardAvoidingView>
     </SafeAreaView>
