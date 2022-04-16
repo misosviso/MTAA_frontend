@@ -2,6 +2,13 @@ import { StyleSheet } from 'react-native';
 
 const useStyles = function() {
     return StyleSheet.create({
+      listItem: {
+        alignItems: 'center',
+        backgroundColor: 'rgb(128, 128, 128)',
+        borderRadius: 8,
+        height: 100,
+        justifyContent: 'space-evenly',
+      },
       button: {
         alignItems: 'center',
         backgroundColor: 'rgb(93, 95, 222)',

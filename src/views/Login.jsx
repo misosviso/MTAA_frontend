@@ -77,7 +77,7 @@ export default function Login() {
       .catch(error => console.log(error))
   }
 
-  function register() {
+  function navigateRegister() {
     navigation.navigate("Register");
   }
 
@@ -110,7 +110,7 @@ export default function Login() {
 
         <MyButton onPress={login} text={"Prihlásiť sa"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
         <Separator height={10}/>
-        <MyButton onPress={register} text={"Zaregistrovať sa"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
+        <MyButton onPress={navigateRegister} text={"Zaregistrovať sa"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
         <Separator height={10}/>
         <MyButton text={"Zabudnuté heslo?"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
 
