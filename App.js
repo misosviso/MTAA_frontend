@@ -8,6 +8,7 @@ import Login from './src/views/Login'
 import Register from './src/views/Register'
 import Home from './src/views/Home'
 import Menu from './src/views/Menu'
+import Reviews from './src/views/Reviews'
 
 const Stack = createStackNavigator()
 
@@ -20,8 +21,6 @@ export default function App(){
       setUserToken(token)
     })
 
-  console.log(userToken)
-
   return (
       <NavigationContainer>
         <Stack.Navigator>
@@ -29,6 +28,7 @@ export default function App(){
           <Stack.Screen name="Register" component={Register} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Menu" component={Menu} />
+          <Stack.Screen name="Reviews" component={Reviews} />
         </Stack.Navigator>
       </NavigationContainer>
   );

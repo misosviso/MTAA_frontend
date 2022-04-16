@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   FlatList,
   Pressable,
   SafeAreaView,
@@ -8,13 +9,11 @@ import {
 // Components
 import Separator from '../components/Separator';
 import * as SecureStore from 'expo-secure-store';
-import Meal from '../components/Meal';
-import MealDetail from '../components/MealDetail';
+import Review from '../components/Review';
+import ReviewDetail from '../components/ReviewDetail'
 
-import { useNavigation } from '@react-navigation/native';
-
-const fetchMeals = async function(userToken, setMeals) {
-  const URI = 'https://mtaa-apina.herokuapp.com/meals/'
+const fetchReviews = async function(userToken, setReviews) {
+  const URI = 'https://mtaa-apina.herokuapp.com/reviews/'
 
   const options = {
     method: 'GET',
@@ -27,14 +26,16 @@ const fetchMeals = async function(userToken, setMeals) {
   try {
     await fetch(URI, options)
       .then( response => response.json())
-      .then( response => setMeals(response.meals))
+      .then( response => {
+        setReviews(response.reviews)
+      })
   } catch (error) {
     console.error(error)
   }
 }
 
-const fetchMeal = async function(userToken, mealID) {
-  const URI = `https://mtaa-apina.herokuapp.com/meals/${mealID}`
+const fetchMealReviews = async function(userToken, setReviews, mealID) {
+  const URI = `https://mtaa-apina.herokuapp.com/reviews/?meal=${mealID}`
 
   const options = {
     method: 'GET',
@@ -45,6 +46,29 @@ const fetchMeal = async function(userToken, mealID) {
   }
 
   try {
+    await fetch(URI, options)
+      .then( response => response.json())
+      .then( response => {
+        setReviews(response.reviews)
+      })
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const fetchReview = async function(userToken, reviewID) {
+  const URI = `https://mtaa-apina.herokuapp.com/reviews/${reviewID}`
+
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + userToken
+    }
+  }
+
+  console.log(URI)
+  try {
     let response = await fetch(URI, options)
     let data = await response.json()
     return data
@@ -53,40 +77,20 @@ const fetchMeal = async function(userToken, mealID) {
   }
 }
 
-const addFavourites = function(userToken, mealID) {
-  const URI = `https://mtaa-apina.herokuapp.com/favourites/${mealID}`
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Token ' + userToken
-    }
-  }
-
-  try {
-    fetch(URI, options)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export default function Menu() {
+export default function Reviews({route}) {
 
   const [userToken, setUserToken] = useState('')
-  const [meals, setMeals] = useState([])
-  const [detailMeal, setDetailMeal] = useState(null)
-
-  const navigation = useNavigation()
+  const [reviews, setReviews] = useState([])
+  const [detailReview, setDetailReview] = useState(null)
 
   const renderItem = ({ item }) => (
     <Pressable onPress={() => {
-      fetchMeal(userToken, item.id)
+      fetchReview(userToken, item.id)
         .then(response => {
-          setDetailMeal(response.meal[0])
+          setDetailReview(response.review)
         })
       }}>
-      <Meal meal={item}/>
+      <Review review={item}/>
       <Separator height={10}></Separator>
     </Pressable>
   )
@@ -95,22 +99,24 @@ export default function Menu() {
     SecureStore.getItemAsync("userToken")
       .then(token => {
         setUserToken(token)
-        fetchMeals(token, setMeals)
+        if(route?.params?.mealID){
+          fetchMealReviews(token, setReviews, route.params.mealID)
+        } else {
+          fetchReviews(token, setReviews)
+        }
       })
   }, [])
   
   
-  if(detailMeal !== null) {
-    let mealID = detailMeal.id
-
+  if(detailReview !== null) {
     return(
       <SafeAreaView>
-        <MealDetail 
-          meal={detailMeal} 
-          showReviews={() => navigation.navigate("Reviews", {mealID})}
+        <ReviewDetail 
+          review={detailReview} 
+          showReviews={() => console.log("Go to reviews")}
           addReview={() => console.log("Go to add review")}
-          addFavourites={() => addFavourites(userToken, detailMeal.id)}
-          goBack={() => setDetailMeal(null)}/>
+          addFavourites={() => addFavourites(userToken, detailReview.id)}
+          goBack={() => setDetailReview(null)}/>
       </SafeAreaView>
     )
   } 
@@ -118,7 +124,7 @@ export default function Menu() {
   return (
     <SafeAreaView>
       <FlatList
-        data={meals}
+        data={reviews}
         keyExtractor={item => item.id}
         renderItem={renderItem}
       />

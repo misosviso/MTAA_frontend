@@ -25,7 +25,7 @@ export default function Home({navigation}) {
   }
 
   function reviews() {
-
+    navigation.navigate("Reviews")
   }
 
   function videoCall() {
@@ -63,7 +63,7 @@ export default function Home({navigation}) {
       <Separator height={20}/>
       <MyButton onPress={menu} text={"Jedálny lístok"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
-      <MyButton text={"Recenzie"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
+      <MyButton onPress={reviews} text={"Recenzie"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
       <MyButton text={"Uskutočniť videohovor"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>

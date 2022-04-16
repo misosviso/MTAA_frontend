@@ -15,6 +15,8 @@ const MealDetail = function ({meal, showReviews, addReview, addFavourites, goBac
       <Text style={styles.title}>{meal.name}</Text>
       <Text>{meal.long_desc}</Text>
       <Text>{meal.price + '€'}</Text>
+      <Text>{'Priemerné hodnotenie: ' + meal.avg_rating + '/10'}</Text>
+      <Text>{'Počet hodnotení: ' + meal.reviews_count}</Text>
       <Separator height={20}></Separator>
       <MyButton 
         buttonStyle={styles.button} 
