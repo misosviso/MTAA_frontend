@@ -21,6 +21,8 @@ export default function ChangePassword() {
     const [confPassword, setConfPassword] = useState('');
     const [token, setToken] = useState('');
 
+    const slovak = require('./slovak.json');
+
     SecureStore.getItemAsync('userToken')
         .then((token) => {
             setToken(token)
@@ -38,17 +40,17 @@ export default function ChangePassword() {
         confPasswordInput.current.clear();
 
         if (!password) {
-            Alert.alert('Error', 'Please enter a password');
+            Alert.alert('Chyba', 'Prosím vyplňte heslo');
             return;
         }
 
         if (!confPassword) {
-            Alert.alert('Error', 'Please confirm your password');
+            Alert.alert('Chyba', 'Prosím potvrďte heslo');
             return;
         }
 
         if (password !== confPassword) {
-            Alert.alert('Error', 'Passwords do not match');
+            Alert.alert('Chyba', 'Heslá sa musia zhodovat');
             return;
         }
 
@@ -67,10 +69,10 @@ export default function ChangePassword() {
             .then(res => res.json())
             .then(data => {
                 if (data.detail === "Password changed successfully") {
-                    Alert.alert('Success', 'Password changed successfully');
+                    Alert.alert('Úspech', slovak[data.detail]);
                     navigateHome();
                 } else {
-                    Alert.alert('Error', data.detail);
+                    Alert.alert('Chyba', slovak[data.detail]);
                 }
                 passwordInput.current.clear();
                 confPasswordInput.current.clear();
@@ -96,7 +98,7 @@ export default function ChangePassword() {
                         onChangeText={setPassword}
                         inputRef={passwordInput}
                         styles={styles}
-                        text={"Heslo"}/>
+                        text={"Nové heslo"}/>
                     <Separator height={10}/>
                     {/* Confirm password */}
                     <MyInput
@@ -109,7 +111,7 @@ export default function ChangePassword() {
 
                     <Separator height={30}/>
 
-                    <MyButton onPress={change} text={"Zmenit heslo"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
+                    <MyButton onPress={change} text={"Zmeniť heslo"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
                 </KeyboardAvoidingView>
             </SafeAreaView>
         </View>

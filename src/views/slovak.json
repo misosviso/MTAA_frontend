@@ -1,0 +1,16 @@
+{
+  "Password changed successfully": "Heslo bolo úspešne zmenené",
+  "Password required but not provided": "Heslo je povinné ale nebolo zadané",
+  "Invalid token.": "Neplatný token.",
+  "This field is required.": "Toto pole je povinné.",
+  "Email with password reset token has been sent": "Email s tokenom pre obnovu hesla bol odoslaný",
+  "Email required but not provided": "Email je povinný ale nebol zadaný",
+  "No user with this email": "Žiadny používateľ s týmto emailom",
+  "Meal not found": "Jedlo sa nenašlo",
+  "File not provided": "Súbor nebol zadaný",
+  "File not found": "Súbor sa nenašiel",
+  "You have to specify meal_id": "Musíte zadať meal_id",
+  "Record does not exist": "Záznam neexistuje",
+  "Review not found": "Recenzia sa nenašla",
+  "Review id not provided": "Id recenzie nebolo zadané"
+}
