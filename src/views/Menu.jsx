@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Alert,
+  FlatList,
   KeyboardAvoidingView,
   Pressable,
   SafeAreaView,
@@ -13,43 +14,45 @@ import Separator from '../components/Separator';
 import MyButton from '../components/MyButton';
 import * as SecureStore from 'expo-secure-store';
 import useStyles from '../styles';
+import Meal from '../components/Meal';
+
+const getData = async function(userToken) {
+  const URI = 'https://mtaa-apina.herokuapp.com/meals/'
+
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token ' + userToken
+    }
+  }
+
+  try {
+    let response = await fetch(URI, options)
+    let data = await response.json()
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 export default function Menu() {
 
-  const fetchMeals = async () => {
+  // const [meals, setMeals] = useState([])
 
-    const options = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Token ' + userToken
-      }
-    }
-
-    fetch('https://mtaa-apina.herokuapp.com/meals/', options)
-      .then(res => res.json())
-      .then(data => {
-          if(data.meals){
-            console.log(data)
-            setMeals(data.meals);
-          } 
-      })
-      .catch(error => console.log(error))
-
-    console.log(meals)
-  }
-
-  const [meals, setMeals] = useState([])
-  const [userToken, setUserToken] = useState('')
-
-  useEffect(() => fetchMeals(), [])
+  let meals;
 
   SecureStore.getItemAsync("userToken")
-    .then(response => setUserToken(response))
+    .then(userToken => getData(userToken))
+    .then(mealsData => {
+      console.log(mealsData)
+      meals = mealsData;
+    })
 
   return (
-
-    <Text>{userToken}</Text>
-
+    <FlatList
+      data={meals}
+      keyExtractor={meal => meal.id.toString()}
+      renderItem={meal => <Meal meal={meal}></Meal>}/>
   )
 }
