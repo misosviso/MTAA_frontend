@@ -20,19 +20,21 @@ import MyTextInput from '../components/MyTextInput';
 
 
 
-export default function WriteReview({route}){
+export default function EditReview({route}){
 
   const styles = useStyles()
   const [text, setText] = useState('')
-  const [rating, setRating] = useState(1)
+  const [rating, setRating] = useState(route.params.review.rating)
   const [photo, setPhoto] = useState(null)
   const textInput = React.createRef()
   const ratingInput = React.createRef()
+
+  textInput.current = "aaa"
  
   const navigation = useNavigation()
 
-  function navigateMenu(){
-    navigation.navigate("Menu")
+  function navigateReviews(){
+    navigation.navigate("Home")
   }
 
   async function postPhoto() {
@@ -69,9 +71,9 @@ export default function WriteReview({route}){
       .then(response => console.log(response))
   }
 
-  async function postReview() {
+  async function putReview() {
 
-    const URI = 'https://mtaa-apina.herokuapp.com/reviews/'
+    const URI = `https://mtaa-apina.herokuapp.com/reviews/${route.params.review.id}`
     let photoID = null;
 
     if (photo) {
@@ -81,12 +83,12 @@ export default function WriteReview({route}){
     const review = {
         rating: rating.toString(),
         text: text,
-        meal: route.params.mealID.toString(),
+        meal: route.params.review.meal_id.toString(),
         photo: photo
     }
 
     const options = {
-        method: 'POST',
+        method: 'PUT',
         body: JSON.stringify(review),
         headers: {
           'Content-Type': 'application/json',
@@ -96,9 +98,9 @@ export default function WriteReview({route}){
 
     fetch(URI, options)
       .then(response => {
-        if(response.status == 201) {
+        if(response.status == 200) {
           Alert.alert("Recenzia bola úspešne pridaná")
-          navigateMenu()
+          navigateReviews()
         }
       })
   }
@@ -122,7 +124,7 @@ export default function WriteReview({route}){
     <View>
       <Text style={styles.title}>{route.params.meal}</Text>
         <MyTextInput
-          text={"Sem môžete napísať svoju recenziu"}
+          text={route.params.review.text}
           styles={styles}
           onChangeText={setText} 
           inputRef={textInput}/>
@@ -130,6 +132,7 @@ export default function WriteReview({route}){
         <Text>{"Vaše hodnotenie: " + rating + "/10"}</Text>
         <Separator height={10} />
         <Slider 
+          value={route.params.review.rating}
           ref={ratingInput}
           minimumValue={0}
           maximumValue={10}
@@ -144,8 +147,8 @@ export default function WriteReview({route}){
         <Separator height={10} />
         <MyButton 
           buttonStyle={styles.button}
-          onPress={postReview}
-          text={"Uverejniť recenziu"}
+          onPress={putReview}
+          text={"Upraviť recenziu"}
           textStyle={styles.buttonTitle}/>
 
     </View>

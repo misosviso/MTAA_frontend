@@ -10,7 +10,7 @@ const Meal = function ({meal}) {
   
   let rating;
   if(meal.avg_rating != 0) {
-    rating = 'Priemerné hodnotenie: ' + meal.avg_rating + '/10'
+    rating = 'Priemerné hodnotenie: ' + Math.round(meal.avg_rating, 2) + '/10'
   } else {
     rating = 'Jedlo ešte nebolo ohodnotené'
   }

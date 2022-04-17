@@ -6,16 +6,22 @@ import MyButton from './MyButton';
 import Separator from './Separator';
 
 
-const MealDetail = function ({meal, showReviews, addReview, addFavourites, goBack}) {
+const MealDetail = function ({meal, showReviews, addReview, favourite, favouriteHandler, goBack}) {
 
   const styles = useStyles()
+  let favouriteHandlerTitle;
+  if(favourite) {
+    favouriteHandlerTitle = "Odstrániť z obľúbených"
+  } else {
+    favouriteHandlerTitle = "Pridať medzi obľúbené"
+  }
 
   return (
     <View>
       <Text style={styles.title}>{meal.name}</Text>
       <Text>{meal.long_desc}</Text>
       <Text>{meal.price + '€'}</Text>
-      <Text>{'Priemerné hodnotenie: ' + meal.avg_rating + '/10'}</Text>
+      <Text>{'Priemerné hodnotenie: ' + Math.round(meal.avg_rating) + '/10'}</Text>
       <Text>{'Počet hodnotení: ' + meal.reviews_count}</Text>
       <Separator height={20}></Separator>
       <MyButton 
@@ -34,8 +40,8 @@ const MealDetail = function ({meal, showReviews, addReview, addFavourites, goBac
       <Separator height={10}></Separator>
       <MyButton 
         buttonStyle={styles.button} 
-        onPress={addFavourites}
-        text={"Pridať medzi obľúbené"}
+        onPress={favouriteHandler}
+        text={favouriteHandlerTitle}
         textStyle={styles.buttonTitle}
       />
       <Separator height={10}></Separator>
