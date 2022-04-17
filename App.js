@@ -10,6 +10,8 @@ import Home from './src/views/Home'
 import Menu from './src/views/Menu'
 import Reviews from './src/views/Reviews'
 import WriteReview from './src/views/WriteReview'
+import ChangePassword from "./src/views/ChangePassword";
+import ResetPassword from "./src/views/ResetPassword";
 
 const Stack = createStackNavigator()
 
@@ -22,6 +24,8 @@ export default function App(){
       setUserToken(token)
     })
 
+  console.log(userToken)
+
   return (
       <NavigationContainer>
         <Stack.Navigator>
@@ -31,6 +35,8 @@ export default function App(){
           <Stack.Screen name="Menu" component={Menu} />
           <Stack.Screen name="Reviews" component={Reviews} />
           <Stack.Screen name="WriteReview" component={WriteReview} />
+          <Stack.Screen name="ChangePassword" component={ChangePassword} />
+          <Stack.Screen name="ResetPassword" component={ResetPassword} />
         </Stack.Navigator>
       </NavigationContainer>
   );
