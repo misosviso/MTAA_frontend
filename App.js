@@ -9,6 +9,7 @@ import Register from './src/views/Register'
 import Home from './src/views/Home'
 import Menu from './src/views/Menu'
 import Reviews from './src/views/Reviews'
+import WriteReview from './src/views/WriteReview'
 
 const Stack = createStackNavigator()
 
@@ -29,6 +30,7 @@ export default function App(){
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Menu" component={Menu} />
           <Stack.Screen name="Reviews" component={Reviews} />
+          <Stack.Screen name="WriteReview" component={WriteReview} />
         </Stack.Navigator>
       </NavigationContainer>
   );

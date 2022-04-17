@@ -107,8 +107,8 @@ export default function Menu() {
       <SafeAreaView>
         <MealDetail 
           meal={detailMeal} 
-          showReviews={() => navigation.navigate("Reviews", {mealID})}
-          addReview={() => console.log("Go to add review")}
+          showReviews={() => navigation.navigate("Reviews", {mealID: detailMeal.id})}
+          addReview={() => navigation.navigate("WriteReview", {mealID: detailMeal.id, meal: detailMeal.name, userToken})}
           addFavourites={() => addFavourites(userToken, detailMeal.id)}
           goBack={() => setDetailMeal(null)}/>
       </SafeAreaView>

@@ -32,11 +32,19 @@ const useStyles = function() {
         alignItems: 'flex-end',
       },
       form: {
-        alignItems: 'center',
+        alignItems:'flex-start',
         backgroundColor: 'rgb(58, 58, 60)',
         borderRadius: 8,
         flexDirection: 'row',
         height: 48,
+        paddingHorizontal: 16,
+      },
+      textInputForm: {
+        alignItems:'flex-start',
+        backgroundColor: 'rgb(58, 58, 60)',
+        borderRadius: 8,
+        flexDirection: 'row',
+        height: 100,
         paddingHorizontal: 16,
       },
       label: {
