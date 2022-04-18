@@ -58,8 +58,11 @@ export default function Home({navigation}) {
   }
 
   return(
-    <View>
-      <Text>Detaily</Text>
+    <View style={styles.root}>
+      <Text style={styles.title}>Detaily</Text>
+      <Text style={styles.subtitle}>Adresa: XXXXXXX 99, YYYYYYYY</Text>
+      <Text style={styles.subtitle}>Telefón: 9999999999</Text>
+      <Text style={styles.subtitle}>E-mail: xxx@xxx.xxx</Text>
       <Separator height={20}/>
       <MyButton onPress={menu} text={"Jedálny lístok"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>

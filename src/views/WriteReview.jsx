@@ -26,6 +26,7 @@ export default function WriteReview({route}){
   const [text, setText] = useState('')
   const [rating, setRating] = useState(1)
   const [photo, setPhoto] = useState(null)
+  const [fileID, setFileID] = useState(null)
   const textInput = React.createRef()
   const ratingInput = React.createRef()
  
@@ -35,54 +36,41 @@ export default function WriteReview({route}){
     navigation.navigate("Menu")
   }
 
-  async function postPhoto() {
-    const URI = 'https://mtaa-apina.herokuapp.com/files/'
-    
-
-    let blobPhoto = await fetch(URI)
-      .then(res => res.blob())
-
-    const photoData = {
-      uri: photo,
-    }
+  async function postPhotoReview() {
+    const URI = 'https://mtaa-apina.herokuapp.com/files/'  
 
     const formData = new FormData()
-    formData.append("image", blobPhoto)
+    formData.append('file', {uri: photo, type: 'image/jpg', name: 'image.jpg'})
+    formData.append('name', String("Recenzia.jpg"));
 
-    const body = {
-      file: formData,
-      name: "abcd.jpg"
+    const request = new XMLHttpRequest()
+
+    let file;
+
+    request.open("POST", URI, true);
+    request.setRequestHeader('Authorization', 'Token ' + route.params.userToken)
+    request.onreadystatechange = () => {
+      if (request.readyState === 4 && request.status === 201) {
+        console.log(request.responseText);
+        file = JSON.parse(request.responseText).id
+        postReview(file)
+      }
     }
+    request.send(formData);
 
-    console.log(JSON.stringify(formData))
-
-    const options = {
-        method: 'POST',
-        body: body,
-        headers: {
-          'Authorization': 'Token ' + route.params.userToken
-        }
-    }
-
-    fetch(URI, options)
-      .then(response => response.json())
-      .then(response => console.log(response))
-  }
-
-  async function postReview() {
+    console.log(request.responseText)
+    return file
+  };
+    
+  async function postReview(file=null) {
 
     const URI = 'https://mtaa-apina.herokuapp.com/reviews/'
-    let photoID = null;
-
-    if (photo) {
-      photoID = postPhoto()
-    }
-
+    
     const review = {
-        rating: rating.toString(),
-        text: text,
-        meal: route.params.mealID.toString(),
-        photo: photo
+      rating: rating.toString(),
+      text: text,
+      meal: route.params.mealID.toString(),
+      photo: file
     }
 
     const options = {
@@ -119,15 +107,16 @@ export default function WriteReview({route}){
   }
 
   return(
-    <View>
+    <View style={styles.root}>
       <Text style={styles.title}>{route.params.meal}</Text>
+        <Separator height={20}></Separator>
         <MyTextInput
           text={"Sem môžete napísať svoju recenziu"}
           styles={styles}
           onChangeText={setText} 
           inputRef={textInput}/>
         <Separator height={20} />
-        <Text>{"Vaše hodnotenie: " + rating + "/10"}</Text>
+        <Text style={styles.subtitle}>{"Vaše hodnotenie: " + rating + "/10"}</Text>
         <Separator height={10} />
         <Slider 
           ref={ratingInput}
@@ -144,7 +133,13 @@ export default function WriteReview({route}){
         <Separator height={10} />
         <MyButton 
           buttonStyle={styles.button}
-          onPress={postReview}
+          onPress={() => {
+            if(photo) {
+              postPhotoReview()
+            } else {
+              postReview()
+            }
+          }}
           text={"Uverejniť recenziu"}
           textStyle={styles.buttonTitle}/>
 

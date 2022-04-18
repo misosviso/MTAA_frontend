@@ -17,12 +17,12 @@ const MealDetail = function ({meal, showReviews, addReview, favourite, favourite
   }
 
   return (
-    <View>
+    <View style={{backgroundColor: '#000000'}}>
       <Text style={styles.title}>{meal.name}</Text>
-      <Text>{meal.long_desc}</Text>
-      <Text>{meal.price + '€'}</Text>
-      <Text>{'Priemerné hodnotenie: ' + Math.round(meal.avg_rating) + '/10'}</Text>
-      <Text>{'Počet hodnotení: ' + meal.reviews_count}</Text>
+      <Text style={styles.subtitle}>{"Popis jedla: " + meal.long_desc}</Text>
+      <Text style={styles.subtitle}>{"Cena: " + meal.price + '€'}</Text>
+      <Text style={styles.subtitle}>{'Priemerné hodnotenie: ' + Math.round(meal.avg_rating) + '/10'}</Text>
+      <Text style={styles.subtitle}>{'Počet hodnotení: ' + meal.reviews_count}</Text>
       <Separator height={20}></Separator>
       <MyButton 
         buttonStyle={styles.button} 
@@ -51,6 +51,7 @@ const MealDetail = function ({meal, showReviews, addReview, favourite, favourite
         text={"Späť do menu"}
         textStyle={styles.buttonTitle}
       />
+       <Separator height={600}></Separator>
     </View>
   )
 }

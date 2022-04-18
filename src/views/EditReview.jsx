@@ -28,8 +28,6 @@ export default function EditReview({route}){
   const [photo, setPhoto] = useState(null)
   const textInput = React.createRef()
   const ratingInput = React.createRef()
-
-  textInput.current = "aaa"
  
   const navigation = useNavigation()
 
@@ -37,54 +35,14 @@ export default function EditReview({route}){
     navigation.navigate("Home")
   }
 
-  async function postPhoto() {
-    const URI = 'https://mtaa-apina.herokuapp.com/files/'
-    
-
-    let blobPhoto = await fetch(URI)
-      .then(res => res.blob())
-
-    const photoData = {
-      uri: photo,
-    }
-
-    const formData = new FormData()
-    formData.append("image", blobPhoto)
-
-    const body = {
-      file: formData,
-      name: "abcd.jpg"
-    }
-
-    console.log(JSON.stringify(formData))
-
-    const options = {
-        method: 'POST',
-        body: body,
-        headers: {
-          'Authorization': 'Token ' + route.params.userToken
-        }
-    }
-
-    fetch(URI, options)
-      .then(response => response.json())
-      .then(response => console.log(response))
-  }
-
   async function putReview() {
 
     const URI = `https://mtaa-apina.herokuapp.com/reviews/${route.params.review.id}`
-    let photoID = null;
-
-    if (photo) {
-      photoID = postPhoto()
-    }
 
     const review = {
         rating: rating.toString(),
         text: text,
         meal: route.params.review.meal_id.toString(),
-        photo: photo
     }
 
     const options = {
@@ -105,31 +63,19 @@ export default function EditReview({route}){
       })
   }
 
-  async function pickImage() {
-    let chosenImage = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    console.log(chosenImage);
-
-    if (!chosenImage.cancelled) {
-      setPhoto(chosenImage.uri)
-    }
-  }
+  console.log(route.params)
 
   return(
-    <View>
-      <Text style={styles.title}>{route.params.meal}</Text>
+    <View style={styles.root}>
+      <Text style={styles.title}>{route.params.review.meal_name}</Text>
+      <Separator height={20}></Separator>
         <MyTextInput
           text={route.params.review.text}
           styles={styles}
           onChangeText={setText} 
           inputRef={textInput}/>
         <Separator height={20} />
-        <Text>{"Vaše hodnotenie: " + rating + "/10"}</Text>
+        <Text style={styles.subtitle}>{"Vaše hodnotenie: " + rating + "/10"}</Text>
         <Separator height={10} />
         <Slider 
           value={route.params.review.rating}
@@ -139,11 +85,6 @@ export default function EditReview({route}){
           step={1}
           onValueChange={(value) => setRating(value)}/>
         <Separator height={30} />
-        <MyButton 
-          buttonStyle={styles.button}
-          onPress={pickImage}
-          text={"Nahrať fotku"}
-          textStyle={styles.buttonTitle}/>
         <Separator height={10} />
         <MyButton 
           buttonStyle={styles.button}

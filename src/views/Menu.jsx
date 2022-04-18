@@ -18,6 +18,7 @@ import Meal from '../components/Meal';
 import MealDetail from '../components/MealDetail';
 
 import { useNavigation } from '@react-navigation/native';
+import useStyles from '../styles';
 import MyButton from '../components/MyButton';
 
 
@@ -142,6 +143,7 @@ export default function Menu() {
   const [modal, setModal] = useState(false)
 
   const navigation = useNavigation()
+  const styles = useStyles()
 
   const renderItem = ({ item }) => (
     <Pressable onPress={() => {
@@ -199,10 +201,10 @@ export default function Menu() {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.root}>
       {/* SORT */}
       <TouchableOpacity onPress={() => setModal(true)} style={{alignSelf: 'flex-end'}}>
-        <Icon name="sort"></Icon>
+        <Icon backgroundColor={'rgb(128, 128, 128)'} name="sort"></Icon>
       </TouchableOpacity>
       <Modal isVisible={modal}>
         <View style={{
@@ -211,41 +213,46 @@ export default function Menu() {
           paddingHorizontal: 15,
           minHeight: 100,
         }}>
-          <Text>Zoradiť podľa: </Text>
+          <Text style={styles.subtitle}>Zoradiť podľa: </Text>
           <Separator height={20}></Separator>
 
-          <TouchableOpacity onPress={() => sort('name', 'asc')}><Text>Podľa mena vzostupne</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => sort('name', 'desc')}><Text>Podľa mena zostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('name', 'asc')}><Text style={styles.subtitle}>Podľa mena vzostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('name', 'desc')}><Text style={styles.subtitle}>Podľa mena zostupne</Text></TouchableOpacity>
           
-          <TouchableOpacity onPress={() => sort('short_desc', 'asc')}><Text>Podľa popisu vzostupne</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => sort('short_desc', 'desc')}><Text>Podľa popisu zostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('short_desc', 'asc')}><Text style={styles.subtitle}>Podľa popisu vzostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('short_desc', 'desc')}><Text style={styles.subtitle}>Podľa popisu zostupne</Text></TouchableOpacity>
           
-          <TouchableOpacity onPress={() => sort('avg_rating', 'asc')}><Text>Podľa hodnotenia vzostupne</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => sort('avg_rating', 'desc')}><Text>Podľa hodnotenia zostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('avg_rating', 'asc')}><Text style={styles.subtitle}>Podľa hodnotenia vzostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('avg_rating', 'desc')}><Text style={styles.subtitle}>Podľa hodnotenia zostupne</Text></TouchableOpacity>
 
-          <TouchableOpacity onPress={() => sort('reviews_count', 'asc')}><Text>Podľa ceny vzostupne</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => sort('reviews_count', 'desc')}><Text>Podľa ceny zostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('reviews_count', 'asc')}><Text style={styles.subtitle}>Podľa ceny vzostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('reviews_count', 'desc')}><Text style={styles.subtitle}>Podľa ceny zostupne</Text></TouchableOpacity>
           
-          <TouchableOpacity onPress={() => sort('price', 'asc')}><Text >Podľa počtu hodnotení vzostupne</Text></TouchableOpacity>
-          <TouchableOpacity onPress={() => sort('price', 'desc')}><Text >Podľa počtu hodnotení zostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('price', 'asc')}><Text style={styles.subtitle}>Podľa počtu hodnotení vzostupne</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => sort('price', 'desc')}><Text style={styles.subtitle}>Podľa počtu hodnotení zostupne</Text></TouchableOpacity>
           
           <Separator height={50}></Separator>
-          <TouchableOpacity onPress={() => setModal(false)}>
-            <Text>Zavrieť</Text>
-          </TouchableOpacity>
+          <MyButton
+            buttonStyle={styles.button}
+            onPress={() => setModal(false)}
+            text={"Zavrieť"}
+            textStyle={styles.buttonTitle}> 
+          </MyButton>
         </View>
       </Modal>
 
       {/* FILTER */}
       <TouchableOpacity onPress={() => { 
-          if(showFavourites) {
+          if(!showFavourites) {
+            setShowFavourites(true)
             fetchFavourites(userToken, setMeals)
           } else {
+            setShowFavourites(false)
             fetchMeals(userToken, setMeals)
           }
-          setShowFavourites(!showFavourites) 
         }} style={{alignSelf: 'flex-end'}}>
-        <Icon name="star"></Icon>
+        {showFavourites && (<Icon color={'rgb(255, 255, 128)'} backgroundColor={'rgb(128, 128, 128)'} name="star"></Icon>)}
+        {!showFavourites && (<Icon backgroundColor={'rgb(128, 128, 128)'} name="star"></Icon>)}
       </TouchableOpacity>
       
       {/* MEALS */}

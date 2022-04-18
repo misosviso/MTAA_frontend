@@ -53,6 +53,7 @@ const useStyles = function() {
         fontWeight: '400',
         lineHeight: 20,
         width: 80,
+        alignContent: 'center'
       },
       root: {
         backgroundColor: '#000000',
