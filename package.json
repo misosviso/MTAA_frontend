@@ -34,6 +34,7 @@
     "react-navigation": "^4.4.4"
   },
   "devDependencies": {
+    "@config-plugins/react-native-webrtc": "^2.1.1",
     "@babel/core": "^7.12.9"
   },
   "private": true
