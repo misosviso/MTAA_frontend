@@ -13,6 +13,7 @@ import WriteReview from './src/views/WriteReview'
 import ChangePassword from "./src/views/ChangePassword";
 import ResetPassword from "./src/views/ResetPassword";
 import EditReview from './src/views/EditReview'
+import Call from './src/views/Call';
 
 const Stack = createStackNavigator()
 
@@ -39,6 +40,7 @@ export default function App(){
           <Stack.Screen name="EditReview" component={EditReview} />
           <Stack.Screen name="ChangePassword" component={ChangePassword} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          <Stack.Screen name="Call" component={Call} />
         </Stack.Navigator>
       </NavigationContainer>
   );
