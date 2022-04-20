@@ -23,7 +23,7 @@ export default function Register() {
   const [email, setEmail] = useState('')
 
   const navigation = useNavigation()
-  
+
   function navigateLogin() {
     navigation.navigate("Login")
   }
@@ -36,32 +36,32 @@ export default function Register() {
   function register(){
 
     if (!username) {
-      Alert.alert("Registration failed", "username is required")
+      Alert.alert("Registrácia zlyhala", "Zadajte prosím používateľské meno")
       return
-    } 
+    }
 
     if (!password) {
-      Alert.alert("Registration failed", "password is required")
+      Alert.alert("Registrácia zlyhala", "Zadajte prosím heslo")
       return
     }
 
     if (!confPassword) {
-        Alert.alert("Registration failed", "password confirmation is required")
+        Alert.alert("Registrácia zlyhala", "Vyžaduje sa potvrdenie hesla")
         return
     }
 
     if (!email) {
-        Alert.alert("Registration failed", "email is required")
+        Alert.alert("Registrácia zlyhala", "Zadajte prosím email")
         return
     }
 
     if (password != confPassword) {
-        Alert.alert("Registration failed", "password and password confirmation are not same")
+        Alert.alert("Registrácia zlyhala", "Heslá sa nezhodujú")
         return
     }
 
     if (!emailValid(email)){
-        Alert.alert("Registration failed", "email address is not valid")
+        Alert.alert("Registrácia zlyhala", "Zadajte prosím platný email")
         return
     }
 
@@ -84,10 +84,10 @@ export default function Register() {
       .then(res => res.json())
       .then(data => {
           if(data.userID) {
-            Alert.alert("Registration sucessfull")
+            Alert.alert("Registrácia úspešná", "Teraz sa môžete prihlásiť")
             navigateLogin()
           } else {
-            Alert.alert("User already exists")
+            Alert.alert("Používateľ už existuje")
           }
           nameInput.current.clear()
           pswdInput.current.clear()
@@ -110,41 +110,41 @@ export default function Register() {
         <Separator height={30}/>
 
         {/* Name */}
-        <MyInput 
-          contentType={"username"} 
-          hideSymbols={false} 
-          onChangeText={setUsername} 
-          inputRef={nameInput} 
-          styles={styles} 
+        <MyInput
+          contentType={"username"}
+          hideSymbols={false}
+          onChangeText={setUsername}
+          inputRef={nameInput}
+          styles={styles}
           text={"Meno"}/>
         <Separator height={10}/>
         {/* Password */}
         <MyInput
-          contentType={"password"} 
-          hideSymbols={true} 
-          onChangeText={setPassword} 
+          contentType={"password"}
+          hideSymbols={true}
+          onChangeText={setPassword}
           inputRef={pswdInput}
-          styles={styles} 
+          styles={styles}
           text={"Heslo"}/>
         <Separator height={10}/>
         {/* Confirm password */}
         <MyInput
-          contentType={"password"} 
-          hideSymbols={true} 
-          onChangeText={setConfPassword} 
+          contentType={"password"}
+          hideSymbols={true}
+          onChangeText={setConfPassword}
           inputRef={pswdConfirmInput}
-          styles={styles} 
+          styles={styles}
           text={"Potvrdenie hesla"}/>
         <Separator height={10}/>
         {/* Email */}
-        <MyInput 
-          contentType={"username"} 
-          hideSymbols={false} 
-          onChangeText={setEmail} 
-          inputRef={emailInput} 
-          styles={styles} 
+        <MyInput
+          contentType={"username"}
+          hideSymbols={false}
+          onChangeText={setEmail}
+          inputRef={emailInput}
+          styles={styles}
           text={"E-mail"}/>
-        
+
         <Separator height={30}/>
 
         <MyButton onPress={register} text={"Zaregistrovať sa"} buttonStyle={styles.button} textStyle={styles.buttonTitle}/>
