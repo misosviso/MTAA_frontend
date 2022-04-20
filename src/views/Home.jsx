@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Pressable,
-  SafeAreaView,
-  Text,
-  TextInput,
-  View,
+    Alert, Image,
+    KeyboardAvoidingView,
+    Pressable,
+    SafeAreaView,
+    Text,
+    TextInput,
+    View,
 } from 'react-native';
 // Components
 import Separator from '../components/Separator';
@@ -59,6 +59,7 @@ export default function Home({navigation}) {
 
   return(
     <View style={styles.root}>
+        <View style={styles.titleImageContatiner}><Image source={require('../../assets/title.jpg')} style={styles.titleImage}/></View>
       <Text style={styles.title}>Detaily</Text>
       <Text style={styles.subtitle}>Adresa: XXXXXXX 99, YYYYYYYY</Text>
       <Text style={styles.subtitle}>Telefón: 9999999999</Text>

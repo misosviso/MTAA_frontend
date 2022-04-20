@@ -84,6 +84,15 @@ const useStyles = function() {
         fontWeight: '700',
         lineHeight: 34,
       },
+      titleImage: {
+        height: 200,
+        width: 350
+      },
+      titleImageContatiner: {
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
+      },
     });
   }
 

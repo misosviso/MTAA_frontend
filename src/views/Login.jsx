@@ -45,12 +45,12 @@ export default function Login() {
     pswdInput.current.clear()
 
     if (!username) {
-      Alert.alert("Login failed", "username is required")
+      Alert.alert("Prihlásenie zlyhalo", "Zadajte prosím používateľské meno")
       return
     }
 
     if (!password) {
-      Alert.alert("Login failed", "password is required")
+      Alert.alert("Prihlásenie zlyhalo", "Zadajte prosím heslo")
       return
     }
 
