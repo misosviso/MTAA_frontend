@@ -29,7 +29,7 @@ export default function Home({navigation}) {
   }
 
   function videoCall() {
-
+      navigation.navigate("Call")
   }
 
   function changePassword() {
@@ -69,7 +69,7 @@ export default function Home({navigation}) {
       <Separator height={10}/>
       <MyButton onPress={reviews} text={"Recenzie"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
-      <MyButton text={"Uskutočniť videohovor"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
+      <MyButton onPress={videoCall} text={"Uskutočniť videohovor"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
       <MyButton onPress={changePassword} text={"Zmena hesla"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>

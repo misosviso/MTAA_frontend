@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "225833583771",
+    "project_id": "mtaa-webrtc-211c9",
+    "storage_bucket": "mtaa-webrtc-211c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225833583771:android:1478b78d8c2c5dbb91f23e",
+        "android_client_info": {
+          "package_name": "com.webrtc_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "225833583771-at7h5on4drcii48450j3kcl1plorivvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6lLr08vpNR5gEnF1mF50qxgkZaSbcqKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "225833583771-at7h5on4drcii48450j3kcl1plorivvn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
