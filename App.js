@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from "@react-navigation/stack"
+import {AsyncStorage} from "react-native";
 
 import * as SecureStore from 'expo-secure-store'
 
@@ -13,9 +14,7 @@ import WriteReview from './src/views/WriteReview'
 import ChangePassword from "./src/views/ChangePassword";
 import ResetPassword from "./src/views/ResetPassword";
 import EditReview from './src/views/EditReview'
-import Call from './src/views/Call';
-import CallScreen from "./src/views/CallScreen";
-import JoinScreen from "./src/views/JoinCallScreen";
+
 
 const Stack = createStackNavigator()
 
@@ -26,6 +25,7 @@ export default function App(){
   SecureStore.getItemAsync('userToken')
     .then((token) => {
       setUserToken(token)
+      AsyncStorage.setItem('userToken', token)
     })
 
   console.log(userToken)
@@ -42,9 +42,6 @@ export default function App(){
           <Stack.Screen name="EditReview" component={EditReview} />
           <Stack.Screen name="ChangePassword" component={ChangePassword} />
           <Stack.Screen name="ResetPassword" component={ResetPassword} />
-          <Stack.Screen name="Call" component={Call} />
-          <Stack.Screen name="CallScreen" component={CallScreen} />
-          <Stack.Screen name="JoinScreen" component={JoinScreen} />
         </Stack.Navigator>
       </NavigationContainer>
   );

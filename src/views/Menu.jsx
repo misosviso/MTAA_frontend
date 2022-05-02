@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import {AsyncStorage} from "react-native";
+import NetInfo from "@react-native-community/netinfo";
 import {
   Alert,
   Button,
@@ -33,13 +35,26 @@ const fetchMeals = async function(userToken, setMeals, orderBy='name', orderType
     }
   }
 
-  try {
-    await fetch(URI, options)
-      .then( response => response.json())
-      .then( response => setMeals(response.meals))
-  } catch (error) {
-    console.error(error)
-  }
+
+  NetInfo.fetch().then(async state => {
+    if (state.isInternetReachable) {
+      await fetch(URI, options)
+          .then(response => response.json())
+          .then(responseJson => {
+            setMeals(responseJson.meals);
+            AsyncStorage.setItem('meals', JSON.stringify(responseJson.meals));
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    } else {
+      console.log('No internet connection');
+      const meals = await AsyncStorage.getItem('meals');
+      setMeals(JSON.parse(meals));
+    }
+  }).catch(error => {
+    console.error(error);
+  });
 }
 
 const fetchFavourites = async function(userToken, setFavourites) {
@@ -53,13 +68,23 @@ const fetchFavourites = async function(userToken, setFavourites) {
     }
   }
 
-  try {
-    await fetch(URI, options)
-      .then( response => response.json())
-      .then( response => setFavourites(response.meals))
-  } catch (error) {
-    console.error(error)
-  }
+  NetInfo.fetch().then(async state => {
+    if (state.isInternetReachable) {
+      fetch(URI, options)
+        .then(response => response.json())
+        .then(responseJson => {
+          setFavourites(responseJson.favourites);
+          AsyncStorage.setItem('favourites', JSON.stringify(responseJson.favourites));
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    } else {
+      console.log('No internet connection');
+      const favourites = await AsyncStorage.getItem('favourites');
+      setFavourites(JSON.parse(favourites));
+    }
+  })
 }
 
 const fetchMeal = async function(userToken, mealID) {
@@ -165,9 +190,9 @@ export default function Menu() {
         fetchFavourites(token, setFavourites)
       })
   }, [])
-  
+
   if(detail !== null) {
-    
+
     let favourite = false;
     favourites.forEach(f => {
       if(f.id == detail.id) {
@@ -184,8 +209,8 @@ export default function Menu() {
 
     return(
       <SafeAreaView>
-        <MealDetail 
-          meal={detail} 
+        <MealDetail
+          meal={detail}
           showReviews={() => navigation.navigate("Reviews", {mealID: detail.id})}
           addReview={() => navigation.navigate("WriteReview", {mealID: detail.id, meal: detail.name, userToken})}
           favourite={favourite}
@@ -193,7 +218,7 @@ export default function Menu() {
           goBack={() => setDetail(null)}/>
       </SafeAreaView>
     )
-  } 
+  }
 
   function sort(orderBy, orderType) {
     fetchMeals(userToken, setMeals, orderBy, orderType)
@@ -218,31 +243,31 @@ export default function Menu() {
 
           <TouchableOpacity onPress={() => sort('name', 'asc')}><Text style={styles.subtitle}>Podľa mena vzostupne</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => sort('name', 'desc')}><Text style={styles.subtitle}>Podľa mena zostupne</Text></TouchableOpacity>
-          
+
           <TouchableOpacity onPress={() => sort('short_desc', 'asc')}><Text style={styles.subtitle}>Podľa popisu vzostupne</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => sort('short_desc', 'desc')}><Text style={styles.subtitle}>Podľa popisu zostupne</Text></TouchableOpacity>
-          
+
           <TouchableOpacity onPress={() => sort('avg_rating', 'asc')}><Text style={styles.subtitle}>Podľa hodnotenia vzostupne</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => sort('avg_rating', 'desc')}><Text style={styles.subtitle}>Podľa hodnotenia zostupne</Text></TouchableOpacity>
 
           <TouchableOpacity onPress={() => sort('reviews_count', 'asc')}><Text style={styles.subtitle}>Podľa ceny vzostupne</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => sort('reviews_count', 'desc')}><Text style={styles.subtitle}>Podľa ceny zostupne</Text></TouchableOpacity>
-          
+
           <TouchableOpacity onPress={() => sort('price', 'asc')}><Text style={styles.subtitle}>Podľa počtu hodnotení vzostupne</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => sort('price', 'desc')}><Text style={styles.subtitle}>Podľa počtu hodnotení zostupne</Text></TouchableOpacity>
-          
+
           <Separator height={50}></Separator>
           <MyButton
             buttonStyle={styles.button}
             onPress={() => setModal(false)}
             text={"Zavrieť"}
-            textStyle={styles.buttonTitle}> 
+            textStyle={styles.buttonTitle}>
           </MyButton>
         </View>
       </Modal>
 
       {/* FILTER */}
-      <TouchableOpacity onPress={() => { 
+      <TouchableOpacity onPress={() => {
           if(!showFavourites) {
             setShowFavourites(true)
             fetchFavourites(userToken, setMeals)
@@ -254,7 +279,7 @@ export default function Menu() {
         {showFavourites && (<Icon color={'rgb(255, 255, 128)'} backgroundColor={'rgb(128, 128, 128)'} name="star"></Icon>)}
         {!showFavourites && (<Icon backgroundColor={'rgb(128, 128, 128)'} name="star"></Icon>)}
       </TouchableOpacity>
-      
+
       {/* MEALS */}
       <FlatList
         data={meals}

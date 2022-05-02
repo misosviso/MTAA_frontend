@@ -28,9 +28,6 @@ export default function Home({navigation}) {
     navigation.navigate("Reviews")
   }
 
-  function videoCall() {
-      navigation.navigate("Call")
-  }
 
   function changePassword() {
       navigation.navigate("ChangePassword")
@@ -68,8 +65,6 @@ export default function Home({navigation}) {
       <MyButton onPress={menu} text={"Jedálny lístok"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
       <MyButton onPress={reviews} text={"Recenzie"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
-      <Separator height={10}/>
-      <MyButton onPress={videoCall} text={"Uskutočniť videohovor"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
       <MyButton onPress={changePassword} text={"Zmena hesla"} buttonStyle={styles.button} textStyle={styles.buttonTitle}></MyButton>
       <Separator height={10}/>
