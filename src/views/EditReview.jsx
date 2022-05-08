@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import NetInfo from "@react-native-community/netinfo";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -28,11 +29,42 @@ export default function EditReview({route}){
   const [photo, setPhoto] = useState(null)
   const textInput = React.createRef()
   const ratingInput = React.createRef()
- 
+
   const navigation = useNavigation()
 
   function navigateReviews(){
     navigation.navigate("Home")
+  }
+
+  async function handleReviewOfflineEdit() {
+      const URI = `https://mtaa-apina.herokuapp.com/reviews/${route.params.review.id}`
+
+      const review = {
+          rating: rating.toString(),
+          text: text,
+          meal: route.params.review.meal_id.toString(),
+      }
+
+      const options = {
+          method: 'PUT',
+          body: JSON.stringify(review),
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Token ' + route.params.userToken
+          }
+      }
+
+      await NetInfo.fetch().then(async (state) => {
+          if (state.isInternetReachable) {
+              fetch(URI, options)
+                  .then(response => {
+                      if (response.status == 200) {
+                          Alert.alert("Recenzia bola úspešne zmenená")
+                          navigateReviews()
+                      }
+                  })
+          }
+      })
   }
 
   async function putReview() {
@@ -54,13 +86,21 @@ export default function EditReview({route}){
         }
     }
 
-    fetch(URI, options)
-      .then(response => {
-        if(response.status == 200) {
-          Alert.alert("Recenzia bola úspešne pridaná")
-          navigateReviews()
-        }
-      })
+    await NetInfo.fetch().then(async (state) => {
+        if (state.isInternetReachable) {
+            fetch(URI, options)
+                .then(response => {
+                    if(response.status == 200) {
+                        Alert.alert("Recenzia bola úspešne zmenená")
+                        navigateReviews()
+                    }
+                })
+        } else {
+            Alert.alert("Recenzia bude zmenená po pripojení k internetu")
+            NetInfo.addEventListener(() => handleReviewOfflineEdit())
+            navigateReviews()
+            }
+        })
   }
 
   console.log(route.params)
@@ -72,12 +112,12 @@ export default function EditReview({route}){
         <MyTextInput
           text={route.params.review.text}
           styles={styles}
-          onChangeText={setText} 
+          onChangeText={setText}
           inputRef={textInput}/>
         <Separator height={20} />
         <Text style={styles.subtitle}>{"Vaše hodnotenie: " + rating + "/10"}</Text>
         <Separator height={10} />
-        <Slider 
+        <Slider
           value={route.params.review.rating}
           ref={ratingInput}
           minimumValue={0}
@@ -86,7 +126,7 @@ export default function EditReview({route}){
           onValueChange={(value) => setRating(value)}/>
         <Separator height={30} />
         <Separator height={10} />
-        <MyButton 
+        <MyButton
           buttonStyle={styles.button}
           onPress={putReview}
           text={"Upraviť recenziu"}

@@ -36,7 +36,7 @@ const fetchMeals = async function(userToken, setMeals, orderBy='name', orderType
   }
 
 
-  NetInfo.fetch().then(async state => {
+  await NetInfo.fetch().then(async state => {
     if (state.isInternetReachable) {
       await fetch(URI, options)
           .then(response => response.json())
@@ -68,13 +68,13 @@ const fetchFavourites = async function(userToken, setFavourites) {
     }
   }
 
-  NetInfo.fetch().then(async state => {
+  await NetInfo.fetch().then(async state => {
     if (state.isInternetReachable) {
-      fetch(URI, options)
+      await fetch(URI, options)
         .then(response => response.json())
         .then(responseJson => {
-          setFavourites(responseJson.favourites);
-          AsyncStorage.setItem('favourites', JSON.stringify(responseJson.favourites));
+          setFavourites(responseJson.meals);
+          AsyncStorage.setItem('favourites', JSON.stringify(responseJson.meals));
         })
         .catch(error => {
           console.error(error);
@@ -98,13 +98,30 @@ const fetchMeal = async function(userToken, mealID) {
     }
   }
 
-  try {
-    let response = await fetch(URI, options)
-    let data = await response.json()
-    return data
-  } catch (error) {
-    console.error(error)
-  }
+  let data = null;
+
+  await NetInfo.fetch().then(async state => {
+    if (state.isInternetReachable) {
+      await fetch(URI, options)
+        .then(response => response.json())
+        .then(responseJson => {
+          AsyncStorage.setItem("meal_" + mealID, JSON.stringify(responseJson));
+          data = responseJson;
+        }
+        ).catch(error => {
+          console.error(error);
+          }
+        );
+    } else {
+      console.log('No internet connection');
+      data = await AsyncStorage.getItem("meal_" + mealID);
+      if (!data) {
+        Alert.alert('No internet connection', 'Please check your internet connection and try again.');
+      }
+      data = JSON.parse(data);
+    }
+  })
+  return data;
 }
 
 const addFavourite = function(userToken, mealID, goBack, setFavourites) {

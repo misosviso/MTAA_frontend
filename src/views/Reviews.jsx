@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import {AsyncStorage} from "react-native";
+import NetInfo from "@react-native-community/netinfo";
 import {
   Alert,
   FlatList,
@@ -31,15 +33,23 @@ const fetchReviews = async function(userToken, setReviews, orderBy='rating', ord
     }
   }
 
-  try {
-    await fetch(URI, options)
-      .then( response => response.json())
-      .then( response => {
-        setReviews(response.reviews)
-      })
-  } catch (error) {
-    console.error(error)
-  }
+  await NetInfo.fetch().then(async (state) => {
+    if (state.isInternetReachable) {
+      await fetch(URI, options)
+      .then(response => response.json())
+          .then( response => {
+            setReviews(response.reviews)
+            AsyncStorage.setItem('reviews', JSON.stringify(response.reviews))
+          })
+          .catch(error => {
+            console.error(error)
+          }
+      )
+    } else {
+      setReviews(JSON.parse(await AsyncStorage.getItem('reviews')))
+    }
+  })
+
 }
 
 const fetchMyReviews = async function(userToken, setReviews) {
@@ -53,15 +63,22 @@ const fetchMyReviews = async function(userToken, setReviews) {
     }
   }
 
-  try {
-    await fetch(URI, options)
-      .then( response => response.json())
-      .then( response => {
-        setReviews(response.reviews)
-      })
-  } catch (error) {
-    console.error(error)
-  }
+  await NetInfo.fetch().then(async (state) => {
+    if (state.isInternetReachable) {
+      await fetch(URI, options)
+          .then(response => response.json())
+          .then(response => {
+            setReviews(response.reviews)
+            AsyncStorage.setItem('myReviews', JSON.stringify(response.reviews))
+          })
+          .catch(error => {
+            console.error(error)
+          })
+    }
+      else {
+        setReviews(JSON.parse(await AsyncStorage.getItem('myReviews')))
+      }
+  })
 }
 
 const fetchMealReviews = async function(userToken, setReviews, mealID) {
@@ -75,15 +92,21 @@ const fetchMealReviews = async function(userToken, setReviews, mealID) {
     }
   }
 
-  try {
-    await fetch(URI, options)
-      .then( response => response.json())
-      .then( response => {
-        setReviews(response.reviews)
-      })
-  } catch (error) {
-    console.error(error)
-  }
+  await NetInfo.fetch().then(async (state) => {
+    if (state.isInternetReachable) {
+      await fetch(URI, options)
+          .then(response => response.json())
+          .then(response => {
+            setReviews(response.reviews)
+            AsyncStorage.setItem('mealReviews_' + mealID, JSON.stringify(response.reviews))
+          })
+          .catch(error => {
+            console.error(error)
+          })}
+      else {
+        setReviews(JSON.parse(await AsyncStorage.getItem('mealReviews_' + mealID)))
+      }
+    })
 }
 
 const fetchReview = async function(userToken, reviewID, setDetail) {
@@ -97,14 +120,50 @@ const fetchReview = async function(userToken, reviewID, setDetail) {
     }
   }
 
-  try {
-    let response = await fetch(URI, options)
-    let data = await response.json()
-    setDetail(data.review)
-    return data
-  } catch (error) {
-    console.error(error)
+  let data = null
+  await NetInfo.fetch().then(async (state) => {
+    if (state.isInternetReachable) {
+      await fetch(URI, options)
+          .then(response => response.json())
+          .then(response => {
+            setDetail(response.review)
+            AsyncStorage.setItem('review_' + reviewID, JSON.stringify(response))
+            data = response
+          })
+          .catch(error => {
+            console.error(error)
+          })
+    } else {
+      data = JSON.parse(await AsyncStorage.getItem('review_' + reviewID))
+        setDetail(data.review)
+          }
+    })
+  return data
+}
+
+async function handleReviewOfflineDelete(userToken, setReviews, setDetail, reviewID) {
+    const URI = `https://mtaa-apina.herokuapp.com/reviews/${reviewID}`
+
+    const options = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Token ' + userToken
+        }
+    }
+  NetInfo.fetch().then(async (state) => {
+    if (state.isInternetReachable) {
+        await fetch(URI, options)
+            .then(response => {
+                console.log(response.status)
+                if (response.status === 200) {
+                    Alert.alert("Recenzia bola odstránená")
+                    fetchReviews(userToken, setReviews)
+                }
+        console.log('Internet is on')
+    })}
   }
+  )
 }
 
 const deleteReview = async function(userToken, reviewID, setReviews, goBack) {
@@ -118,19 +177,23 @@ const deleteReview = async function(userToken, reviewID, setReviews, goBack) {
     }
   }
 
-  try {
-    fetch(URI, options)
-      .then(response => {
-        console.log(response.status)
-        if(response.status == 200) {
-          Alert.alert("Recenzia bola odstránená")
-          fetchReviews(userToken, setReviews)
-          goBack()
-        }
-      })
-  } catch (error) {
-    console.error(error)
-  }
+  await NetInfo.fetch().then(async (state) => {
+    if (state.isInternetReachable) {
+      await fetch(URI, options)
+          .then(response => {
+              console.log(response.status)
+              if (response.status === 200) {
+                  Alert.alert("Recenzia bola odstránená")
+                  fetchReviews(userToken, setReviews)
+                  goBack()
+              }
+          })
+    } else {
+        Alert.alert("Recenzia bude odstránená po pripojení k internetu")
+        NetInfo.addEventListener(() => handleReviewOfflineDelete(userToken, setReviews, goBack, reviewID))
+        goBack()
+    }
+  })
 }
 
 export default function Reviews({route}) {
@@ -170,8 +233,8 @@ export default function Reviews({route}) {
         }
       })
   }, [])
-  
-  
+
+
   if(detailReview !== null) {
     let myReview = false;
 
@@ -184,17 +247,17 @@ export default function Reviews({route}) {
     return(
       <View style={{backgroundColor: '#000000'}}>
         <SafeAreaView >
-          <ReviewDetail 
+          <ReviewDetail
             myReview={myReview}
             editReview={() => navigation.navigate("EditReview", {userToken, review: detailReview})}
             deleteReview={() => deleteReview(userToken, detailReview.id, setReviews, goBack)}
-            review={detailReview} 
+            review={detailReview}
             goBack={() => setDetailReview(null)}
             userToken={userToken}/>
         </SafeAreaView>
       </View>
     )
-  } 
+  }
 
   function sort(orderBy, orderType) {
     setShowMy(false)
@@ -220,16 +283,16 @@ export default function Reviews({route}) {
 
           <TouchableOpacity onPress={() => sort('rating', 'asc')}><Text style={styles.subtitle}>Podľa hodontenia vzostupne</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => sort('rating', 'desc')}><Text style={styles.subtitle}>Podľa hodnotenia zostupne</Text></TouchableOpacity>
-          
+
           <TouchableOpacity onPress={() => sort('created_at', 'asc')}><Text style={styles.subtitle}>Od najstarších</Text></TouchableOpacity>
           <TouchableOpacity onPress={() => sort('created_at', 'desc')}><Text style={styles.subtitle}>Od najnovších</Text></TouchableOpacity>
-          
+
           <Separator height={50}></Separator>
           <MyButton
             buttonStyle={styles.button}
             onPress={() => setModal(false)}
             text={"Zavrieť"}
-            textStyle={styles.buttonTitle}> 
+            textStyle={styles.buttonTitle}>
           </MyButton>
         </View>
       </Modal>

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import NetInfo from "@react-native-community/netinfo";
+import {AsyncStorage} from "react-native";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -19,7 +21,6 @@ import useStyles from '../styles';
 import MyTextInput from '../components/MyTextInput';
 
 
-
 export default function WriteReview({route}){
 
   const styles = useStyles()
@@ -29,7 +30,7 @@ export default function WriteReview({route}){
   const [fileID, setFileID] = useState(null)
   const textInput = React.createRef()
   const ratingInput = React.createRef()
- 
+
   const navigation = useNavigation()
 
   function navigateMenu(){
@@ -37,7 +38,7 @@ export default function WriteReview({route}){
   }
 
   async function postPhotoReview() {
-    const URI = 'https://mtaa-apina.herokuapp.com/files/'  
+    const URI = 'https://mtaa-apina.herokuapp.com/files/'
 
     const formData = new FormData()
     formData.append('file', {uri: photo, type: 'image/jpg', name: 'image.jpg'})
@@ -60,12 +61,12 @@ export default function WriteReview({route}){
 
     console.log(request.responseText)
     return file
-  };
-    
+  }
+
   async function postReview(file=null) {
 
     const URI = 'https://mtaa-apina.herokuapp.com/reviews/'
-    
+
     const review = {
       rating: rating.toString(),
       text: text,
@@ -82,13 +83,20 @@ export default function WriteReview({route}){
         }
     }
 
-    fetch(URI, options)
-      .then(response => {
-        if(response.status == 201) {
-          Alert.alert("Recenzia bola úspešne pridaná")
+    await NetInfo.fetch().then(async (state) => {
+        if (state.isInternetReachable) {
+          fetch(URI, options)
+              .then(response => {
+                if(response.status == 201) {
+                  Alert.alert("Recenzia bola úspešne pridaná")
+                  navigateMenu()
+                }
+              })
+        } else {
+          Alert.alert("Nie je pripojenie")
           navigateMenu()
         }
-      })
+    })
   }
 
   async function pickImage() {
@@ -113,25 +121,25 @@ export default function WriteReview({route}){
         <MyTextInput
           text={"Sem môžete napísať svoju recenziu"}
           styles={styles}
-          onChangeText={setText} 
+          onChangeText={setText}
           inputRef={textInput}/>
         <Separator height={20} />
         <Text style={styles.subtitle}>{"Vaše hodnotenie: " + rating + "/10"}</Text>
         <Separator height={10} />
-        <Slider 
+        <Slider
           ref={ratingInput}
           minimumValue={0}
           maximumValue={10}
           step={1}
           onValueChange={(value) => setRating(value)}/>
         <Separator height={30} />
-        <MyButton 
+        <MyButton
           buttonStyle={styles.button}
           onPress={pickImage}
           text={"Nahrať fotku"}
           textStyle={styles.buttonTitle}/>
         <Separator height={10} />
-        <MyButton 
+        <MyButton
           buttonStyle={styles.button}
           onPress={() => {
             if(photo) {
